@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spoiler Frame</title>
+    <title>Spoiler Inside</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background: #000;
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
@@ -14,16 +15,17 @@
         }
         h1 {
             text-align: center;
-            color: #333;
+        }
+        h2, label { 
+            color: #ff8c00;
         }
         .container {
-            background-color: #f5f5f5;
+            background-color: #222735;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .input-group {
-            margin-bottom: 15px;
+            margin-bottom: 1em;
         }
         label {
             display: block;
@@ -41,8 +43,13 @@
             height: 100px;
             resize: vertical;
         }
-        button {
-            background-color: #4CAF50;
+        textarea:invalid {
+            border: 2px dashed black;
+        }
+        button, input[type="submit"] {
+            margin-top: 1em;
+            background-color: rgba(255, 140, 0, 0.8);
+            font-weight: bold;
             color: white;
             border: none;
             padding: 10px 15px;
@@ -50,8 +57,8 @@
             cursor: pointer;
             font-size: 16px;
         }
-        button:hover {
-            background-color: #45a049;
+        button:hover, input[type="submit"] {
+            background-color: rgba(255, 140, 0, 1);
         }
         .spoiler-warning {
             background-color: #fff3cd;
@@ -85,26 +92,25 @@
     </style>
 </head>
 <body>
-    <h1>Spoiler Frame</h1>
+    <h1><a href="/"><img alt="Spoiler Inside" src="icon.png"/></a></h1>
 
-    <div class="container" id="create-spoiler-container">
-        <h2>Create Spoiler</h2>
+    <form class="container" id="create-spoiler-container" onsubmit="generateSpoilerUrl(event)">
         <div class="input-group">
-            <label for="warning-text">Spoiler Warning:</label>
+            <label for="spoiler-text">Hidden Spoiler</label>
+            <textarea id="spoiler-text" placeholder="Darth Vader is Luke's father" required></textarea>
+        </div>
+        <div class="input-group">
+            <label for="warning-text">Visible Spoiler Warning</label>
             <input type="text" id="warning-text" placeholder="Star Wars: Episode V - The Empire Strikes Back">
         </div>
-        <div class="input-group">
-            <label for="spoiler-text">Spoiler Content:</label>
-            <textarea id="spoiler-text" placeholder="Darth Vader is Luke's father"></textarea>
-        </div>
-        <button id="generate-btn">Generate Spoiler Link</button>
+        <button type="submit" id="generate-btn">Generate Spoiler Link</button>
 
         <div id="share-url-container" class="hidden">
-            <h3>Share this URL:</h3>
+            <h2>Spoiler Inside URL:</h2>
             <a href id="share-url" class="share-url"></a>
             <button id="copy-btn" class="copy-btn">Copy to Clipboard</button>
         </div>
-    </div>
+    </form>
 
     <div class="container hidden" id="view-spoiler-container">
         <div class="spoiler-warning" id="warning-display"></div>
@@ -114,129 +120,125 @@
     </div>
 
     <script type="module">
-      import { sdk } from 'https://esm.sh/@farcaster/frame-sdk'
+        import { sdk } from 'https://esm.sh/@farcaster/frame-sdk'
 
-      await sdk.actions.ready();
+        await sdk.actions.ready();
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const createContainer = document.getElementById('create-spoiler-container');
-            const viewContainer = document.getElementById('view-spoiler-container');
-            const warningInput = document.getElementById('warning-text');
-            const spoilerInput = document.getElementById('spoiler-text');
-            const generateBtn = document.getElementById('generate-btn');
-            const revealBtn = document.getElementById('reveal-btn');
-            const createNewBtn = document.getElementById('create-new-btn');
-            const warningDisplay = document.getElementById('warning-display');
-            const spoilerDisplay = document.getElementById('spoiler-display');
-            const shareUrlContainer = document.getElementById('share-url-container');
-            const shareUrl = document.getElementById('share-url');
-            const copyBtn = document.getElementById('copy-btn');
+        const createContainer = document.getElementById('create-spoiler-container');
+        const viewContainer = document.getElementById('view-spoiler-container');
+        const warningInput = document.getElementById('warning-text');
+        const spoilerInput = document.getElementById('spoiler-text');
+        const generateBtn = document.getElementById('generate-btn');
+        const revealBtn = document.getElementById('reveal-btn');
+        const createNewBtn = document.getElementById('create-new-btn');
+        const warningDisplay = document.getElementById('warning-display');
+        const spoilerDisplay = document.getElementById('spoiler-display');
+        const shareUrlContainer = document.getElementById('share-url-container');
+        const shareUrl = document.getElementById('share-url');
+        const copyBtn = document.getElementById('copy-btn');
 
-            // Check if URL has spoiler data
-            function checkUrlForSpoiler() {
-                if (window.location.hash) {
-                    try {
-                        const hashData = window.location.hash.substring(1);
-                        const decodedData = JSON.parse(atob(hashData));
+        // Check if URL has spoiler data
+        function checkUrlForSpoiler() {
+            if (window.location.hash) {
+                try {
+                    const hashData = window.location.hash.substring(1);
+                    const decodedData = JSON.parse(atob(hashData));
 
-                        if (decodedData.warning && decodedData.spoiler) {
-                            // Show the view container
-                            createContainer.classList.add('hidden');
-                            viewContainer.classList.remove('hidden');
+                    if (decodedData.warning && decodedData.spoiler) {
+                        // Show the view container
+                        createContainer.classList.add('hidden');
+                        viewContainer.classList.remove('hidden');
 
-                            // Set the warning text
-                            warningDisplay.textContent = `⚠️ SPOILER WARNING: ${decodedData.warning}`;
+                        // Set the warning text
+                        warningDisplay.textContent = `⚠️ SPOILER WARNING: ${decodedData.warning}`;
 
-                            // Set the spoiler text (but keep it hidden)
-                            spoilerDisplay.textContent = decodedData.spoiler;
-                            return true;
-                        }
-                    } catch (e) {
-                        console.error("Error parsing hash data:", e);
+                        // Set the spoiler text (but keep it hidden)
+                        spoilerDisplay.textContent = decodedData.spoiler;
+                        return true;
                     }
+                } catch (e) {
+                    console.error("Error parsing hash data:", e);
                 }
-                return false;
             }
+            return false;
+        }
 
-            // Generate the spoiler URL
-            function generateSpoilerUrl() {
-                const warning = warningInput.value.trim();
-                const spoiler = spoilerInput.value.trim();
+        // Generate the spoiler URL
+        function generateSpoilerUrl(event) {
+            if (event !==undefined) event.preventDefault();
 
-                if (warning === '' || spoiler === '') {
-                    alert('Please fill in both fields.');
-                    return;
-                }
+            const warning = warningInput.value.trim();
+            const spoiler = spoilerInput.value.trim();
 
-                const data = {
-                    warning: warning,
-                    spoiler: spoiler
-                };
+            const data = {
+                warning: warning,
+                spoiler: spoiler
+            };
 
-                const encodedData = btoa(JSON.stringify(data));
-                const url = `${window.location.origin}${window.location.pathname}#${encodedData}`;
+            const encodedData = btoa(JSON.stringify(data));
+            const url = `${window.location.origin}${window.location.pathname}#${encodedData}`;
 
-                shareUrlContainer.classList.remove('hidden');
-                shareUrl.textContent = url;
-                shareUrl.href = url;
+            shareUrlContainer.classList.remove('hidden');
+            shareUrl.textContent = url;
+            shareUrl.href = url;
 
-                sdk.actions.composeCast({
-                  text: "Spoiler: " + url,
+            sdk.actions.composeCast({
+                embds: [url],
+                close: true,
+            })
+        }
+
+        // Reveal the spoiler content
+        function revealSpoiler() {
+            spoilerDisplay.classList.remove('hidden');
+            revealBtn.classList.add('hidden');
+            createNewBtn.classList.remove('hidden');
+        }
+
+        // Create a new spoiler
+        function createNewSpoiler() {
+            viewContainer.classList.add('hidden');
+            createContainer.classList.remove('hidden');
+            spoilerDisplay.classList.add('hidden');
+            revealBtn.classList.remove('hidden');
+            createNewBtn.classList.add('hidden');
+            shareUrlContainer.classList.add('hidden');
+
+            // Clear the form
+            warningInput.value = '';
+            spoilerInput.value = '';
+
+            // Remove the hash from the URL
+            history.pushState("", document.title, window.location.pathname);
+        }
+
+        // Copy the spoiler URL to clipboard
+        function copyToClipboard() {
+            navigator.clipboard.writeText(shareUrl.textContent)
+                .then(() => {
+                    const originalText = copyBtn.textContent;
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyBtn.textContent = originalText;
+                    }, 2000);
                 })
-            }
+                .catch(err => {
+                    console.error('Failed to copy text: ', err);
+                    alert('Failed to copy to clipboard. Please copy the URL manually.');
+                });
+        }
 
-            // Reveal the spoiler content
-            function revealSpoiler() {
-                spoilerDisplay.classList.remove('hidden');
-                revealBtn.classList.add('hidden');
-                createNewBtn.classList.remove('hidden');
-            }
+        // Event listeners
+        generateBtn.addEventListener('click', generateSpoilerUrl);
+        revealBtn.addEventListener('click', revealSpoiler);
+        createNewBtn.addEventListener('click', createNewSpoiler);
+        copyBtn.addEventListener('click', copyToClipboard);
 
-            // Create a new spoiler
-            function createNewSpoiler() {
-                viewContainer.classList.add('hidden');
-                createContainer.classList.remove('hidden');
-                spoilerDisplay.classList.add('hidden');
-                revealBtn.classList.remove('hidden');
-                createNewBtn.classList.add('hidden');
-                shareUrlContainer.classList.add('hidden');
-
-                // Clear the form
-                warningInput.value = '';
-                spoilerInput.value = '';
-
-                // Remove the hash from the URL
-                history.pushState("", document.title, window.location.pathname);
-            }
-
-            // Copy the spoiler URL to clipboard
-            function copyToClipboard() {
-                navigator.clipboard.writeText(shareUrl.textContent)
-                    .then(() => {
-                        const originalText = copyBtn.textContent;
-                        copyBtn.textContent = 'Copied!';
-                        setTimeout(() => {
-                            copyBtn.textContent = originalText;
-                        }, 2000);
-                    })
-                    .catch(err => {
-                        console.error('Failed to copy text: ', err);
-                        alert('Failed to copy to clipboard. Please copy the URL manually.');
-                    });
-            }
-
-            // Event listeners
-            generateBtn.addEventListener('click', generateSpoilerUrl);
-            revealBtn.addEventListener('click', revealSpoiler);
-            createNewBtn.addEventListener('click', createNewSpoiler);
-            copyBtn.addEventListener('click', copyToClipboard);
-
-            // Check for spoiler data when the page loads
-            if (!checkUrlForSpoiler()) {
-                createContainer.classList.remove('hidden');
-                viewContainer.classList.add('hidden');
-            }
-        });
+        // Check for spoiler data when the page loads
+        if (!checkUrlForSpoiler()) {
+            createContainer.classList.remove('hidden');
+            viewContainer.classList.add('hidden');
+        }
     </script>
 </body>
 </html>
