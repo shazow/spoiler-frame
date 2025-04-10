@@ -1,6 +1,6 @@
 # Spoiler Frame
 
-I originally built a minimal version myself, but then used AI to one-shot a better version real quick.
+I originally built a minimal version myself, but then used AI to one-shot a better version real quick, then spent way more time fixing up the result. 🙃
 
 Initial prompt for Claude Sonnet 3.7:
 
