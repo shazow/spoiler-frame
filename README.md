@@ -1,4 +1,9 @@
-# Spoiler Frame
+# Spoiler Inside - Farcaster mini app
+
+<img width="428" alt="image" src="https://github.com/user-attachments/assets/30841bba-dc28-4239-86ea-0458ff12796d" />
+<img width="428" alt="image" src="https://github.com/user-attachments/assets/6056ed3e-28c4-451a-b3d6-a34123d1cea8" />
+
+## Lore
 
 I originally built a minimal version myself, but then used AI to one-shot a better version real quick, then spent way more time fixing up the result. 🙃
 
