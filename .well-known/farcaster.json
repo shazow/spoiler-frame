@@ -8,5 +8,10 @@
     "buttonTitle": "Open Spoiler",
     "splashImageUrl": "https://spoiler.shazow.net/splash.png",
     "splashBackgroundColor": "#f5f0ec"
+  },
+  "accountAssociation": {
+    "header": "eyJmaWQiOjU2OTQsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHhDNGU3NzE5MEVGRWI2OThCRTg5MDQ5Q0MxMWRmOGRCYkFDNzcyQmRkIn0",
+    "payload": "eyJkb21haW4iOiJzcG9pbGVyLnNoYXpvdy5uZXQifQ",
+    "signature": "MHhiM2I3ZWFhYjBlNzQ3YmZmMWY1M2U2NzY1YjZlN2NkMzIwNjRiZWQ1NTQ5YzMxNDliZTk3OGZlZGJhMmVkN2U1MjU5ODEyYTczNTE4NmRkNzAyYTMwOWQ5ZDE2YzkyMjQ2YzczNGQwMmZlNTc0NWQ1MThmYTQ2MTkwYjJiYmVmMDFj"
   }
 }
