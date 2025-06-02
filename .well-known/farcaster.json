@@ -1,0 +1,12 @@
+{
+  "frame": {
+    "version": "1",
+    "name": "Spoiler Inside",
+    "iconUrl": "https://spoiler.shazow.net/icon.png",
+    "homeUrl": "https://spoiler.shazow.net",
+    "imageUrl": "https://spoiler.shazow.net/splash.png",
+    "buttonTitle": "Open Spoiler",
+    "splashImageUrl": "https://spoiler.shazow.net/splash.png",
+    "splashBackgroundColor": "#f5f0ec"
+  }
+}
